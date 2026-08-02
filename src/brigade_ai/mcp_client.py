@@ -26,11 +26,12 @@ async def main() -> None:
         
         tools = await load_mcp_tools(session)
 
-        chop = next(tool for tool in tools if tool.name == "chop")
-        mix = next(tool for tool in tools if tool.name == "mix")
-        cook = next(tool for tool in tools if tool.name == "cook")
+        tools_by_name = {
+            tool.name: tool
+            for tool in tools
+        }
 
-        result = await chop.ainvoke(
+        result = await tools_by_name['chop'].ainvoke(
             {
                 "ingredient": "onion",
                 "style": "finely diced",
@@ -49,48 +50,29 @@ async def main() -> None:
         print(parsed["status"])
         print(parsed["action_number"])
 
-        result = await chop.ainvoke(
-            {
-                "ingredient": "carrot",
-                "style": "julienned",
-            }
-        )
-
-        text = result[0]["text"]
-        parsed = json.loads(text)
-
-        print(parsed["action"])
-        print(parsed["ingredient"])
-        print(parsed["status"])
-        print(parsed["action_number"])
-
-        result = await mix.ainvoke(
+        result = await tools_by_name['mix'].ainvoke(
             {
                 "ingredients": ["onion", "carrot"],
+                "method": "briskly by hand",
             }
         )
 
-        text = result[0]["text"]
-        parsed = json.loads(text)
-
-        print(parsed["action"])
-        print(parsed["ingredients"])
-        print(parsed["status"])
-        print(parsed["action_number"])
-
-        result = await cook.ainvoke(
+        result = await tools_by_name['stir'].ainvoke(
             {
-                "ingredients": ["onion", "carrot"],
+                "ingredient": "carrots",
+                "duration_seconds": 45,
             }
         )
 
-        text = result[0]["text"]
-        parsed = json.loads(text)
+        result = await tools_by_name['cook'].ainvoke(
+            {
+                "ingredient": "chicken",
+                "method": "saute",
+                "minutes": 5,
+            }
+        )
 
-        print(parsed["action"])
-        print(parsed["ingredients"])
-        print(parsed["status"])
-        print(parsed["action_number"])
+        print(f"Result\n\n {result}")
 
 def _parse_tool_result(result: list[dict[str, Any]]) -> dict[str, Any]:
     text_block = next (
