@@ -13,20 +13,20 @@ def chop(ingredient: str, style: str) -> dict[str, object]:
         "ingredient": ingredient,
         "style": style,
         "status": "completed",
-        "action_numbers": next(action_numbers)
+        "action_number": next(action_numbers)
     }
 
 @mcp.tool()
-def mix(ingredients: str) -> dict[str, object]:
+def mix(ingredients: [str]) -> dict[str, object]:
     return {
             "action": "mix",
-            "ingredient": ingredients,
+            "ingredients": ingredients,
             "status": "completed",
             "action_number": next(action_numbers),
     }
 
 @mcp.tool()
-def cook(ingredients: str) -> dict[str, object]:
+def cook(ingredients: [str]) -> dict[str, object]:
     return {
         "action": "cook",
         "ingredients": ingredients,

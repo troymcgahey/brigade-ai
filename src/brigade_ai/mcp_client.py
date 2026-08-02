@@ -27,6 +27,8 @@ async def main() -> None:
         tools = await load_mcp_tools(session)
 
         chop = next(tool for tool in tools if tool.name == "chop")
+        mix = next(tool for tool in tools if tool.name == "mix")
+        cook = next(tool for tool in tools if tool.name == "cook")
 
         result = await chop.ainvoke(
             {
@@ -45,7 +47,7 @@ async def main() -> None:
         print(parsed["action"])
         print(parsed["ingredient"])
         print(parsed["status"])
-        print(parsed["action_numbers"])
+        print(parsed["action_number"])
 
         result = await chop.ainvoke(
             {
@@ -57,20 +59,38 @@ async def main() -> None:
         text = result[0]["text"]
         parsed = json.loads(text)
 
-        #print(type(result))   # list
-        #print(type(text))     # str
-        #print(type(parsed))   # dict
-
         print(parsed["action"])
         print(parsed["ingredient"])
         print(parsed["status"])
-        print(parsed["action_numbers"])
+        print(parsed["action_number"])
 
-        #chop_result = _parse_tool_result(result)
+        result = await mix.ainvoke(
+            {
+                "ingredients": ["onion", "carrot"],
+            }
+        )
 
-        #print(chop_result["ingredient"])
-        #print(chop_result["status"])
-        #print(chop_result["action_number"])
+        text = result[0]["text"]
+        parsed = json.loads(text)
+
+        print(parsed["action"])
+        print(parsed["ingredients"])
+        print(parsed["status"])
+        print(parsed["action_number"])
+
+        result = await cook.ainvoke(
+            {
+                "ingredients": ["onion", "carrot"],
+            }
+        )
+
+        text = result[0]["text"]
+        parsed = json.loads(text)
+
+        print(parsed["action"])
+        print(parsed["ingredients"])
+        print(parsed["status"])
+        print(parsed["action_number"])
 
 def _parse_tool_result(result: list[dict[str, Any]]) -> dict[str, Any]:
     text_block = next (
