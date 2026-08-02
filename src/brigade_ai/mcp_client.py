@@ -53,8 +53,9 @@ async def main() -> None:
                 "style": "julienned",
             }
         )
-        #text = result[0]["text"]
-        #parsed = json.loads(text)
+
+        text = result[0]["text"]
+        parsed = json.loads(text)
 
         #print(type(result))   # list
         #print(type(text))     # str

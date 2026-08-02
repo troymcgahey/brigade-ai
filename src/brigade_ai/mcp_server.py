@@ -3,17 +3,35 @@ from itertools import count
 
 mcp = FastMCP("Brigade Kitchen")
 
-action_numbers = count()
+action_numbers = count(1)
 
 @mcp.tool()
-def chop(ingredient: str, style: str) -> dict[str, str]:
+def chop(ingredient: str, style: str) -> dict[str, object]:
     """Chop an ingredient using the requested cutting style."""
     return {
         "action": "chop",
         "ingredient": ingredient,
         "style": style,
         "status": "completed",
-        "action_numbers": str(next(action_numbers))
+        "action_numbers": next(action_numbers)
+    }
+
+@mcp.tool()
+def mix(ingredients: str) -> dict[str, object]:
+    return {
+            "action": "mix",
+            "ingredient": ingredients,
+            "status": "completed",
+            "action_number": next(action_numbers),
+    }
+
+@mcp.tool()
+def cook(ingredients: str) -> dict[str, object]:
+    return {
+        "action": "cook",
+        "ingredients": ingredients,
+        "status": "completed",
+        "action_number": next(action_numbers),
     }
 
 def main() -> None:
