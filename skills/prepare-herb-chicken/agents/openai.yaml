@@ -1,0 +1,4 @@
+interface:
+  display_name: "Prepare Herb Chicken"
+  short_description: "Plan and prepare an herb chicken main course"
+  default_prompt: "Use this recipe skill to prepare herb chicken."
