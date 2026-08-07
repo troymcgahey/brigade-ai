@@ -1,15 +1,15 @@
 {
     "name": "prepare-herb-chicken",
-    "description": "This is a recipe on how to prepare a herb chicken."
+    "description": "This is a recipe on how to prepare a herb chicken.",
     "step": [
         {
             "number": 1,
             "tool": "chop",
             "arguments": {
                 "ingredient": "chicken",
-                "style": "bite-sized-pieces",
+                "style": "bite-sized-pieces"
             }
-        }
+        },
         {
             "number": 2,
             "tool": "mix",
@@ -18,16 +18,16 @@
                     "chicken", 
                     "basil"
                 ],
-                "method": "by hand",
+                "method": "by hand"
             }
-        }
+        },
         {
             "number": 3,
             "tool": "cook",
             "arguments": {
                 "ingredient": "chicken",
                 "method": "pan sear",
-                "minutes": 12,
+                "minutes": 12
             }
         }
     ]
