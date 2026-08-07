@@ -1,7 +1,8 @@
 {
-    "name": "prepare-herb-chicken",
-    "description": "This is a recipe on how to prepare a herb chicken.",
-    "step": [
+    "name": "Herb Chicken",
+    "description": "A recipe for preparing a herb chicken course.",
+    "servings": 2,
+    "steps": [
         {
             "number": 1,
             "tool": "chop",
