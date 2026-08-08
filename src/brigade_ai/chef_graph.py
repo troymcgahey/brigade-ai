@@ -33,6 +33,12 @@ def summarize_plan(state: ChefState) -> dict[str, str]:
 
     return {"plan_summary": summary}
 
+def execute_step(state: ChefState) -> dict[str, str]:
+
+def more_steps(state: ChefState) -> dict[str, strc]:
+
+def summarize_meal(state: ChefState):
+
 def build_graph(tools: Mapping[str, BaseTool]):
     builder = StateGraph(ChefState)
 
@@ -82,6 +88,18 @@ def build_graph(tools: Mapping[str, BaseTool]):
     builder.add_edge("chop_ingredient", "cook_ingredient")
     builder.add_edge("cook_ingredient", "summarize_plan")
     builder.add_edge("summarize_plan", END)
+
+    return builder.compile()
+
+def build_loop_graph():
+    builder = StateGraph(ChefState)
+
+    builder.add_node("load_recipe", load_recipe)
+    builder.add_node("execute_step", execute_step)
+    builder.add_node("summarize_meal", summarize_meal)
+
+    builder.add_edge(START, "load_recipe")
+    builder.add_edge("load_recipe", "execute_step")
 
     return builder.compile()
 
