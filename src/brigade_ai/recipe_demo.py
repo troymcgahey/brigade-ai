@@ -5,7 +5,7 @@ from brigade_ai.recipe_loader import load_recipe
 def main() -> None:
     recipe_path = Path("skills/prepare-herb-chicken/references/recipe.json")
 
-    recipe = recipe_load(recipe_path)
+    recipe = load_recipe(recipe_path)
 
     print("Recipe: ", recipe)
     print("Name: ", recipe.name)
