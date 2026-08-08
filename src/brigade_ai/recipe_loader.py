@@ -22,24 +22,24 @@ class Recipe(BaseModel):
     servings: int = Field(gt=0)
     steps: list[RecipeStep] = Field(min_length=1)
 
-@model_validator(mode="after")
-def validate_step_order(self) -> Self:
-    actual_numbers = [
-        step.number
-            for step in self.steps
-    ]
+    @model_validator(mode="after")
+    def validate_step_order(self) -> Self:
+        actual_numbers = [
+            step.number
+                for step in self.steps
+        ]
 
-    expected_numbers = list(
-        range(1, len(self.steps) + 1)
-    )
-
-    if actual_numbers != expected_numbers:
-        raise ValueError(
-            "Recipe steps must be numbered sequentially "
-            f"starting at 1; received {actual_numbers}"
+        expected_numbers = list(
+            range(1, len(self.steps) + 1)
         )
 
-    return self
+        if actual_numbers != expected_numbers:
+            raise ValueError(
+                "Recipe steps must be numbered sequentially "
+                f"starting at 1; received {actual_numbers}"
+            )
+
+        return self
 
 def load_recipe(path: Path) -> Recipe:
     with path.open("r", encoding="utf-8") as file:
