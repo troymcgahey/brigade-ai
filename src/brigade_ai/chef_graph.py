@@ -6,14 +6,16 @@ from collections.abc import Mapping
 from langgraph.graph import END, START, StateGraph
 from langchain_core.tools import BaseTool
 
+from brigade_ai.recipe_loader import Recipe
+from pathlib import Path
+
 class ChefState(TypedDict, total=False):
     request: str
-    ingredient: str
-    chop_style: str
-    cook_method: str
-    cook_minutes: int
-    plan_summary: str
+    recipe_path: str
+    recipe: Recipe
+    current_step_index: int
     action_log: Annotated[list[dict[str, object]], operator.add]
+    final_report: str
 
 
 def plan_recipe(state: ChefState) -> dict[str, object]:
@@ -33,73 +35,31 @@ def summarize_plan(state: ChefState) -> dict[str, str]:
 
     return {"plan_summary": summary}
 
-def execute_step(state: ChefState) -> dict[str, str]:
-
-def more_steps(state: ChefState) -> dict[str, strc]:
-
-def summarize_meal(state: ChefState):
+def load_recipe_node(state: ChefState) -> dict{str, object]:
+    # Read state["recipe_path"].
+    # Convert it into a Path.
+    # Call load_recipe().
+    # Initialize current_step_index to zero.
+    # Initialize action_log to an empty list.
 
 def build_graph(tools: Mapping[str, BaseTool]):
     builder = StateGraph(ChefState)
 
-    async def chop_ingredient(
-        state: ChefState,
-    ) -> dict[str, list[dict[str, object]]]:
-        result = await tools['chop'].ainvoke(
-            {
-                "ingredient": state['ingredient'],
-                "style": state['chop_style'],
-            }
-        )
-
-        text = result[0]["text"]
-        parsed_result = json.loads(text)
-
-        return {
-            "action_log": [parsed_result],
-        }
-
-    async def cook_ingredient(
-        state: ChefState,
-    ) -> dict[str, list[dict[str, object]]]:
-        result = await tools['cook'].ainvoke(
-            {
-                "ingredient": state['ingredient'],
-                "method": state['cook_method'],
-                "minutes": state['cook_minutes'],
-            }
-        )
-
-        text = result[0]["text"]
-        parsed_result = json.loads(text)
-
-        return {
-            "action_log": [parsed_result],
-        }
-
-    builder.add_node("plan_recipe", plan_recipe)
-    builder.add_node("summarize_plan", summarize_plan)
-
-    builder.add_node("chop_ingredient", chop_ingredient)
-    builder.add_node("cook_ingredient", cook_ingredient)
-
-    builder.add_edge(START, "plan_recipe")
-    builder.add_edge("plan_recipe", "chop_ingredient")
-    builder.add_edge("chop_ingredient", "cook_ingredient")
-    builder.add_edge("cook_ingredient", "summarize_plan")
-    builder.add_edge("summarize_plan", END)
-
-    return builder.compile()
-
-def build_loop_graph():
-    builder = StateGraph(ChefState)
-
     builder.add_node("load_recipe", load_recipe)
-    builder.add_node("execute_step", execute_step)
-    builder.add_node("summarize_meal", summarize_meal)
 
-    builder.add_edge(START, "load_recipe")
-    builder.add_edge("load_recipe", "execute_step")
+    async def execute_step(
+        state: ChefState,
+    ) -> dict[str, object]:
+
+        recipe = state["recipe"]
+        step_index = state["current_step_index"]
+        step = recipe.steps[step_index]
+        tool = tools[step.tool]
+
+        raw_result = await tool.ainvoke(step.arguments)
+
+        text = raw_result[0]["text"]
+        parsed_result = json.loads(text)
 
     return builder.compile()
 

@@ -9,8 +9,9 @@ def main() -> None:
 
     print("Recipe: ", recipe)
     print("Name: ", recipe.name)
-    print(f"Name: {recipe.steps[0].tool}")
-    print("First arguments: ", recipe.steps[0].arguments)
+    print(f"Step tool: {recipe.steps[0].tool}")
+    print(f"Step number: {recipe.steps[0].number}")
+    print("Step arguments: ", recipe.steps[0].arguments)
 
 if __name__ == "__main__":
     main()
