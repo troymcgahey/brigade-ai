@@ -36,11 +36,17 @@ async def main() -> None:
 
         # TODO: invoke graph with a request
         result = await chef_graph.ainvoke(
-            {"request": "Make a simple chicken dinner"}
+            {
+                "request": "Prepare herb chicken",
+                "recipe_path": (
+                    "skills/prepare-herb-chicken/"
+                    "references/recipe.json"
+                ),
+            }
         )
 
         # TODO: print final report
-        print(result)
+        print(result["final_report"])
 
 if __name__ == "__main__":
     asyncio.run(main())
