@@ -1,12 +1,12 @@
 import operator
 import json
 
-from typing import TypedDict, Annotated
+from typing import TypedDict, Annotated, Literal
 from collections.abc import Mapping
 from langgraph.graph import END, START, StateGraph
 from langchain_core.tools import BaseTool
 
-from brigade_ai.recipe_loader import Recipe
+from brigade_ai.recipe_loader import Recipe, load_recipe
 from pathlib import Path
 
 class ChefState(TypedDict, total=False):
@@ -37,7 +37,7 @@ def summarize_meal(state: ChefState) -> dict[str, object]:
     report = f"{state["recipe"].name} completed for {state["recipe"].servings}.\nActions:"
 
     for action in state["action_log"]:
-        report += f"\n{state["action_number"]}. {state["action"]} - {state["status"]}"
+        report += f"\n{action["action_number"]}. {action["action"]} - {action["status"]}"
 
     return {
         **state,
@@ -45,7 +45,7 @@ def summarize_meal(state: ChefState) -> dict[str, object]:
     }
 
 def route_after_step(state: ChefState) -> Literal["more_steps", "complete"]:
-    if state["current_step_index"] < len(state["recipe"].steps:
+    if state["current_step_index"] < len(state["recipe"].steps):
         return "more_steps"
 
     return "complete"
@@ -85,8 +85,8 @@ def build_graph(tools: Mapping[str, BaseTool]):
         "execute_step",
         route_after_step,
         {
-            "more_steps", "execute_step",
-            "complete", "summarize_meal",
+            "more_steps": "execute_step",
+            "complete": "summarize_meal",
         },
     )
 
