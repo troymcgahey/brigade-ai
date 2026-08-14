@@ -21,8 +21,8 @@ class ChefState(TypedDict, total=False):
     final_report: str
 
 
-def load_recipe_node(state: ChefState) -> dict{str, object]:
-    recipe_path = Path(state["recipe_path"]
+def load_recipe_node(state: ChefState) -> dict[str, object]:
+    recipe_path = Path(state["recipe_path"])
     recipe = load_recipe(recipe_path)
 
     return {
@@ -34,16 +34,21 @@ def load_recipe_node(state: ChefState) -> dict{str, object]:
 
 def summarize_meal(state: ChefState) -> dict[str, object]:
 
-    report = f"""
-{state["recipe"].name} completed for {state["recipe"].servings}.\nActions:"""
+    report = f"{state["recipe"].name} completed for {state["recipe"].servings}.\nActions:"
 
     for action in state["action_log"]:
-        print(f"{state["action_number"]}")
+        report += f"\n{state["action_number"]}. {state["action"]} - {state["status"]}"
 
     return {
         **state,
         "final_report": report,
     }
+
+def route_after_step(state: ChefState) -> Literal["more_steps", "complete"]:
+    if state["current_step_index"] < len(state["recipe"].steps:
+        return "more_steps"
+
+    return "complete"
 
 def build_graph(tools: Mapping[str, BaseTool]):
     builder = StateGraph(ChefState)
@@ -70,7 +75,7 @@ def build_graph(tools: Mapping[str, BaseTool]):
 
     builder.add_node("load_recipe", load_recipe_node)
     builder.add_node("execute_step", execute_step)
-    builder.add_npde("summarize_meal", summarize_meal)
+    builder.add_node("summarize_meal", summarize_meal)
 
     builder.add_edge(START, "load_recipe")
     builder.add_edge("load_recipe", "execute_step")

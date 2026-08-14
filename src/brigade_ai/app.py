@@ -22,19 +22,15 @@ async def main() -> None:
     )
 
     async with client.session("kitchen") as session:
-        # TODO: load tools
         tools = await load_mcp_tools(session)
     
-        # TODO: index tools by name
         tools_by_name = {
                 tool.name: tool
                 for tool in tools
         }
 
-        # TODO: build graph
         chef_graph = build_graph(tools_by_name)
 
-        # TODO: invoke graph with a request
         result = await chef_graph.ainvoke(
             {
                 "request": "Prepare herb chicken",
@@ -45,7 +41,6 @@ async def main() -> None:
             }
         )
 
-        # TODO: print final report
         print(result["final_report"])
 
 if __name__ == "__main__":
