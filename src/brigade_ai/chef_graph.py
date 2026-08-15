@@ -26,21 +26,28 @@ def load_recipe_node(state: ChefState) -> dict[str, object]:
     recipe = load_recipe(recipe_path)
 
     return {
-        **state,
         "recipe": recipe,
         "current_step_index": 0,
         "action_log": [],
     }
 
-def summarize_meal(state: ChefState) -> dict[str, object]:
+def summarize_meal(state: ChefState) -> dict[str, str]:
+    recipe = state["recipe"]
 
-    report = f"{state["recipe"].name} completed for {state["recipe"].servings}.\nActions:"
+    report = (
+        f"{recipe.name} completed for "
+        f"{recipe.servings} servings.\n"
+        "Actions:"
+    )
 
     for action in state["action_log"]:
-        report += f"\n{action["action_number"]}. {action["action"]} - {action["status"]}"
+        report += (
+            f"\n{action['action_number']}. "
+            f"{action['action']} - "
+            f"{action['status']}"
+        )
 
     return {
-        **state,
         "final_report": report,
     }
 
@@ -60,7 +67,14 @@ def build_graph(tools: Mapping[str, BaseTool]):
         recipe = state["recipe"]
         step_index = state["current_step_index"]
         step = recipe.steps[step_index]
-        tool = tools[step.tool]
+
+        tool = tools.get(step.tool)
+
+        if tool is None:
+            raise ValueError(
+                f"Receipt step {step.number} requires unavailable "
+                f"MCP tool {step.toll!r}"
+            )
 
         raw_result = await tool.ainvoke(step.arguments)
 
@@ -68,7 +82,6 @@ def build_graph(tools: Mapping[str, BaseTool]):
         parsed_result = json.loads(text)
 
         return {
-            **state,
             "action_log": [parsed_result],
             "current_step_index": step_index + 1,
         }
@@ -91,11 +104,3 @@ def build_graph(tools: Mapping[str, BaseTool]):
     )
 
     return builder.compile()
-
-def main() -> None:
-    chef_graph = build_graph()
-
-    print(result)
-
-if __name__ == "__main__":
-    main()
