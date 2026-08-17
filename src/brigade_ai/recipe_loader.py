@@ -11,7 +11,7 @@ class RecipeStep(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     number: int = Field(gt=0)
-    tool: Literal["chop", "mix", "stir", "cook"]
+    tool: Literal["chop", "mix", "stir", "cook", "halve"]
     arguments: dict[str, Any]
 
 class Recipe(BaseModel):
@@ -42,6 +42,7 @@ class Recipe(BaseModel):
         return self
 
 def load_recipe(path: Path) -> Recipe:
+    print(f"PATH----------XXXXXXXXXXXXXXXXX {path} ------------XXXXXXXXXXXXXX")
     with path.open("r", encoding="utf-8") as file:
         data = json.load(file)
 

@@ -1,0 +1,24 @@
+{
+    "name": "Roasted Potatoes",
+    "description": "A recipe for preparing a reoasted potato side dish.",
+    "servings": 2,
+    "steps": [
+        {
+            "number": 1,
+            "tool": "halve",
+            "arguments": {
+                "ingredient": "minitiature potatoes",
+                "style": "bite-sized-pieces"
+            }
+        },
+        {
+            "number": 2,
+            "tool": "cook",
+            "arguments": {
+                "ingredients": "miniature potatoes",
+                "method": "roast in oven",
+                "minutes": 20
+            }
+        }
+    ]
+}
