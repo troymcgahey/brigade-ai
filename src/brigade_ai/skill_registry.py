@@ -15,6 +15,8 @@ class SkillRegistry:
         self._skills: dict[str, RecipeSkill] = {}
 
     def discover(self) -> None:
+        self._skills.clear()
+
         for directory in self.skills_root.iterdir():
             if not directory.is_dir():
                 continue
@@ -26,42 +28,50 @@ class SkillRegistry:
 
             recipe_path = directory / "references" / "recipe.json"
 
+            if not recipe_path.is_file():
+                continue
+
             recipe = load_recipe(recipe_path)
 
-            recipeSkill = {
-                "name": recipe.name,
-                "directory": directory,
-                "skill_path": skill_path,
-                "recipe_path": recipe_path,
-                "recipe": recipe,
-            }
+            recipe_skill = RecipeSkill( 
+                name=directory.name,
+                directory=directory,
+                skill_path=skill_path,
+                recipe_path=recipe_path,
+                recipe=recipe,
+            )
 
-            self._skills[directory] = recipeSkill 
+            self._skills[directory.name] = recipe_skill 
 
     def get(self, name: str) -> RecipeSkill:
         """Returns the requested skill. Raises error if skill cannot be found."""
+        
+        skill = self._skills.get(name)
 
-        return self._skills[name]
+        if skill is None:
+            available = ", ".join(sorted(self._skills))
+            raise ValueError(
+                f"Unknpwn recipe skill {name!r}. "
+                f"Available skills: {available or 'none'}"
+            )
+
+        return skill
 
     def list_skills(self) -> list[RecipeSkill]:
-        """Returns all skills sorted by name."""
-
-        skills = []
-        for key in sorted(self._skills.keys()):
-            skills.append(self._skills[key])
-
-        return skills
+        """Returns a list of RecipeSkills sorted by name ascending."""
+        return [
+            self._skills[name] for name in sorted(self._skills)
+        ]
 
 def main():
     registry = SkillRegistry(Path("skills"))
     registry.discover()
 
     for skill in registry.list_skills():
-        print(f"SSSSSSSSS----------- {skill} ------------SSSSSSSSSSSS")
-        print(skill["name"], "-", skill["recipe"].Recipe.name)
+        print(skill.name, "-", skill.recipe.name)
 
-    herb_chicken = registry.get("prepare-herb-chicken")
-    print(herb_chicken)
+    herb_chicken = registry.get("does-not-exist")
+    print(herb_chicken.recipe_path)
 
 
 if __name__ == "__main__":

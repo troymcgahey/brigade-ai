@@ -42,7 +42,6 @@ class Recipe(BaseModel):
         return self
 
 def load_recipe(path: Path) -> Recipe:
-    print(f"PATH----------XXXXXXXXXXXXXXXXX {path} ------------XXXXXXXXXXXXXX")
     with path.open("r", encoding="utf-8") as file:
         data = json.load(file)
 
