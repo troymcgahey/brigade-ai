@@ -51,7 +51,7 @@ class SkillRegistry:
         if skill is None:
             available = ", ".join(sorted(self._skills))
             raise ValueError(
-                f"Unknpwn recipe skill {name!r}. "
+                f"Unknown recipe skill {name!r}. "
                 f"Available skills: {available or 'none'}"
             )
 
@@ -70,8 +70,11 @@ def main():
     for skill in registry.list_skills():
         print(skill.name, "-", skill.recipe.name)
 
-    herb_chicken = registry.get("does-not-exist")
-    print(herb_chicken.recipe_path)
+    try:
+        skill = registry.get("does-not-exist")
+        print(skill.recipe_path)
+    except ValueError as error:
+        print(f"Error: {error}")
 
 
 if __name__ == "__main__":
