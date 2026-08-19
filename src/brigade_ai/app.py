@@ -1,11 +1,22 @@
 import asyncio
 
+from pathlib import Path
+from brigade_ai.skill_registry import SkillRegistry
+
 from langchain_mcp_adapters.client import MultiServerMCPClient
 from langchain_mcp_adapters.tools import load_mcp_tools
 
 from brigade_ai.chef_graph import build_graph
 
 async def main() -> None:
+
+    project_root = Path(__file__).resolve().parents[2]
+
+    registry = SkillRegistry(project_root / "skills")
+    registry.discover()
+
+    recipe_skill = registry.get("prepare-herb-chicken")
+
     client = MultiServerMCPClient(
         {
             "kitchen": {
@@ -33,11 +44,8 @@ async def main() -> None:
 
         result = await chef_graph.ainvoke(
             {
-                "request": "Prepare herb chicken",
-                "recipe_path": (
-                    "skills/prepare-herb-chicken/"
-                    "references/recipe.json"
-                ),
+                "request": f"Prepare {recipe_skill.recipe.name}",
+                "recipe_path": str(recipe_skill.recipe_path),
             }
         )
 
