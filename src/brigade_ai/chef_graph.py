@@ -73,7 +73,7 @@ def build_graph(tools: Mapping[str, BaseTool]):
         if tool is None:
             raise ValueError(
                 f"Receipt step {step.number} requires unavailable "
-                f"MCP tool {step.toll!r}"
+                f"MCP tool {step.tool!r}"
             )
 
         raw_result = await tool.ainvoke(step.arguments)

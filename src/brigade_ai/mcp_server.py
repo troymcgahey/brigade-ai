@@ -35,7 +35,7 @@ def mix(ingredients: list[str], method: str) -> dict[str, object]:
     return _completed_action(
         "mix",
         next(action_numbers),
-        ingredients=ingredients,
+        ingredient=ingredients,
         method=method,
     )
 
@@ -59,6 +59,16 @@ def stir(ingredient: str, duration_seconds: Annotated[int, Field(gt=0, le=600)])
         ingredient=ingredient,
         duration_seconds=duration_seconds,
     )
+
+@mcp.tool()
+def halve(ingredient: str) -> dict[str, object]:
+    """Cut the ingrdient in half."""
+    return _completed_action(
+        "halve",
+        next(action_numbers),
+        ingredient=ingredient,
+    )
+
 
 def main() -> None:
     mcp.run(transport="stdio")

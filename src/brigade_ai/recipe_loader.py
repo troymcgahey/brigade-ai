@@ -43,6 +43,8 @@ class Recipe(BaseModel):
 
 def load_recipe(path: Path) -> Recipe:
     with path.open("r", encoding="utf-8") as file:
+        print(f"PATH-------------- {path}")
+        print(f"file-------------- {file}")
         data = json.load(file)
 
     return Recipe.model_validate(data)

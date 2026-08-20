@@ -15,7 +15,7 @@ async def main() -> None:
     registry = SkillRegistry(project_root / "skills")
     registry.discover()
 
-    recipe_skill = registry.get("prepare-herb-chicken")
+    recipe_skill = registry.get("prepare-roasted-potatoes")
 
     client = MultiServerMCPClient(
         {
